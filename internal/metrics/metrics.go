@@ -12,20 +12,20 @@ import (
 // field is deterministic so two runs against the same input produce
 // the same bytes.
 type Summary struct {
-	RunCount        int                    `json:"run_count"`
-	StatusCounts    ingest.StatusCounts    `json:"status_counts"`
-	PassRate        float64                `json:"pass_rate"`
-	ReviewedCount   int                    `json:"reviewed_count"`
-	RunLatency      LatencyStats           `json:"run_latency"`
-	StepLatency     LatencyStats           `json:"step_latency"`
-	Tokens          TokenStats             `json:"tokens"`
-	CitationsPerRun CountStats             `json:"citations_per_run"`
-	IssuesPerRun    CountStats             `json:"issues_per_run"`
-	IssueKindCounts map[string]int         `json:"issue_kind_counts"`
-	Strategies      []string               `json:"strategies"`
-	Products        []string               `json:"products"`
-	Models          []string               `json:"models"`
-	TimeRange       TimeRange              `json:"time_range"`
+	RunCount        int                 `json:"run_count"`
+	StatusCounts    ingest.StatusCounts `json:"status_counts"`
+	PassRate        float64             `json:"pass_rate"`
+	ReviewedCount   int                 `json:"reviewed_count"`
+	RunLatency      LatencyStats        `json:"run_latency"`
+	StepLatency     LatencyStats        `json:"step_latency"`
+	Tokens          TokenStats          `json:"tokens"`
+	CitationsPerRun CountStats          `json:"citations_per_run"`
+	IssuesPerRun    CountStats          `json:"issues_per_run"`
+	IssueKindCounts map[string]int      `json:"issue_kind_counts"`
+	Strategies      []string            `json:"strategies"`
+	Products        []string            `json:"products"`
+	Models          []string            `json:"models"`
+	TimeRange       TimeRange           `json:"time_range"`
 }
 
 // TimeRange records the spread of run timestamps.
@@ -108,9 +108,9 @@ func Summarise(bundles []ingest.Bundle) Summary {
 	if len(startedAt) > 0 {
 		sort.Slice(startedAt, func(i, j int) bool { return startedAt[i].Before(startedAt[j]) })
 		out.TimeRange = TimeRange{
-			Start:   startedAt[0],
-			End:     startedAt[len(startedAt)-1],
-			SpanMS:  startedAt[len(startedAt)-1].Sub(startedAt[0]).Milliseconds(),
+			Start:  startedAt[0],
+			End:    startedAt[len(startedAt)-1],
+			SpanMS: startedAt[len(startedAt)-1].Sub(startedAt[0]).Milliseconds(),
 		}
 	}
 	return out

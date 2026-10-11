@@ -205,12 +205,12 @@ func makeBundlesForSummarise() []ingest.Bundle {
 			DurationMS: 5000,
 			Reviewed:   true,
 			Request:    ingest.BundleRequest{ProductID: "demo-product", Feature: "f1"},
-			Proposal:   &ingest.BundleProposal{
+			Proposal: &ingest.BundleProposal{
 				Citations: []ingest.BundleCitation{{FactID: "f-1"}, {FactID: "f-2"}},
 				Issues:    []ingest.BundleIssue{{Kind: "unsupported"}, {Kind: "overstated"}},
 			},
 			RevisedChecks: ingest.BundleChecks{Passed: true},
-			Usage:         &ingest.BundleUsage{
+			Usage: &ingest.BundleUsage{
 				InputTokens: 1000, OutputTokens: 300,
 			},
 			Trace: []ingest.BundleStep{
@@ -231,7 +231,7 @@ func makeBundlesForSummarise() []ingest.Bundle {
 			Reviewed:      false,
 			Request:       ingest.BundleRequest{ProductID: "demo-product", Feature: "f2"},
 			RevisedChecks: ingest.BundleChecks{Passed: false},
-			Usage:         &ingest.BundleUsage{
+			Usage: &ingest.BundleUsage{
 				InputTokens: 2000, OutputTokens: 500,
 			},
 			Trace: []ingest.BundleStep{
