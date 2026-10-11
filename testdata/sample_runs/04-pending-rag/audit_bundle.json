@@ -1,0 +1,47 @@
+{
+  "run_id": "pending-rag-001",
+  "status": "pending_review",
+  "strategy": "rag",
+  "model": "qwen3:14b-instruct",
+  "prompt_version": "claim-audit-v2",
+  "started_at": "2026-10-01T08:15:00Z",
+  "duration_ms": 14200,
+  "reviewed": false,
+  "request": {
+    "id": "demo-004",
+    "product_id": "demo-other",
+    "product_name": "Demo Other",
+    "locale": "es-ES",
+    "feature": "demo-feature-2",
+    "channel": "landing_page",
+    "original_copy": "Demo Other reduces onboarding time by 80%.",
+    "audience": "demo growth teams"
+  },
+  "proposal": {
+    "revised_copy": "Demo Other's onboarding tooling aims to cut time to first action in published beta trials.",
+    "issues": [
+      {"quote": "reduces onboarding time by 80%", "kind": "unsupported", "reason": "No published benchmark supports an exact 80% reduction.", "fact_ids": ["demo-fact-3"]}
+    ],
+    "citations": [
+      {"quote": "Demo Other released an onboarding beta with preliminary qualitative results.", "fact_id": "demo-fact-3"}
+    ]
+  },
+  "revised_checks": {
+    "passed": true,
+    "checked_fact_ids": ["demo-fact-3"],
+    "manual_review_required": true,
+    "structural_errors": [],
+    "semantic_support_verified": false
+  },
+  "usage": {
+    "model_calls": 2,
+    "tool_calls": 3,
+    "input_tokens": 1650,
+    "output_tokens": 280
+  },
+  "trace": [
+    {"step": "model_response", "turn": 1, "duration_ms": 5200, "tool_calls": 2},
+    {"step": "tool_call", "tool": "search_knowledge", "selected_fact_ids": ["demo-fact-3"]},
+    {"step": "proposal_checked", "attempt": 1, "duration_ms": 5900, "passed": true, "issues": 1}
+  ]
+}

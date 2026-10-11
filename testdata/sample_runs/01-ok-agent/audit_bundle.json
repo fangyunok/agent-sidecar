@@ -1,0 +1,49 @@
+{
+  "run_id": "ok-agent-001",
+  "status": "pending_review",
+  "strategy": "agent",
+  "model": "qwen3:4b-instruct",
+  "prompt_version": "claim-audit-v2",
+  "started_at": "2026-10-01T08:00:00Z",
+  "duration_ms": 9800,
+  "reviewed": true,
+  "request": {
+    "id": "demo-001",
+    "product_id": "demo-product",
+    "product_name": "Demo Product",
+    "locale": "en-US",
+    "feature": "demo-feature",
+    "channel": "landing_page",
+    "original_copy": "Demo Product guarantees 4K streaming with zero latency.",
+    "audience": "demo readers"
+  },
+  "proposal": {
+    "revised_copy": "Demo Product streams content on supported devices with normal buffering delays.",
+    "issues": [
+      {"quote": "guarantees 4K streaming", "kind": "overstated", "reason": "Performance guarantees are not in the public source material.", "fact_ids": []},
+      {"quote": "zero latency", "kind": "unsupported", "reason": "Universal 'zero latency' is not supported.", "fact_ids": []}
+    ],
+    "citations": [
+      {"quote": "Demo Product streams content on supported devices.", "fact_id": "demo-fact-1"},
+      {"quote": "Buffering depends on the user's network.", "fact_id": "demo-fact-2"}
+    ]
+  },
+  "revised_checks": {
+    "passed": true,
+    "checked_fact_ids": ["demo-fact-1", "demo-fact-2"],
+    "manual_review_required": true,
+    "structural_errors": [],
+    "semantic_support_verified": false
+  },
+  "usage": {
+    "model_calls": 2,
+    "tool_calls": 4,
+    "input_tokens": 1100,
+    "output_tokens": 340
+  },
+  "trace": [
+    {"step": "model_response", "turn": 1, "duration_ms": 4400, "tool_calls": 2},
+    {"step": "tool_call", "tool": "search_knowledge", "selected_fact_ids": ["demo-fact-1", "demo-fact-2"]},
+    {"step": "proposal_checked", "attempt": 1, "duration_ms": 4900, "passed": true, "issues": 2}
+  ]
+}
