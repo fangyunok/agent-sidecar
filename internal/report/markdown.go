@@ -48,13 +48,15 @@ func WriteMarkdown(w io.Writer, scan ingest.ScanReport, summary metrics.Summary,
 	return nil
 }
 
-// WriteJSON encodes scan + summary as a single JSON document.
+// WriteJSON encodes scan + summary as a single JSON document. Field
+// order is hand-curated so the leading lines of the document are
+// stable (Header comes before Scan / Summary).
 func WriteJSON(w io.Writer, scan ingest.ScanReport, summary metrics.Summary) error {
 	payload := struct {
+		Header  reportHeader      `json:"header"`
 		Scan    ingest.ScanReport `json:"scan"`
 		Summary metrics.Summary   `json:"summary"`
-		Header  reportHeader      `json:"header"`
-	}{scan, summary, reportHeader{SchemaVersion: schemaVersion, Tool: "agent-sidecar"}}
+	}{reportHeader{SchemaVersion: schemaVersion, Tool: "agent-sidecar"}, scan, summary}
 	enc := json.NewEncoder(w)
 	enc.SetIndent("", "  ")
 	return enc.Encode(payload)

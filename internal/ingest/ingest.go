@@ -53,17 +53,17 @@ type BundleRequest struct {
 
 // BundleProposal is the LLM-authored revised copy plus cited evidence.
 type BundleProposal struct {
-	RevisedCopy string             `json:"revised_copy"`
-	Issues      []BundleIssue      `json:"issues"`
-	Citations   []BundleCitation   `json:"citations"`
+	RevisedCopy string           `json:"revised_copy"`
+	Issues      []BundleIssue    `json:"issues"`
+	Citations   []BundleCitation `json:"citations"`
 }
 
 // BundleIssue is one flagged statement.
 type BundleIssue struct {
-	Quote    string   `json:"quote"`
-	Kind     string   `json:"kind"`
-	Reason   string   `json:"reason"`
-	FactIDs  []string `json:"fact_ids"`
+	Quote   string   `json:"quote"`
+	Kind    string   `json:"kind"`
+	Reason  string   `json:"reason"`
+	FactIDs []string `json:"fact_ids"`
 }
 
 // BundleCitation pairs a piece of revised copy with a fact it cites.
@@ -74,15 +74,15 @@ type BundleCitation struct {
 
 // BundleChecks is the deterministic post-proposal check result.
 type BundleChecks struct {
-	Passed                    bool     `json:"passed"`
-	UnknownFactIDs            []string `json:"unknown_fact_ids"`
-	ForbiddenPhrases          []string `json:"forbidden_phrases"`
-	UnsupportedNumbers        []string `json:"unsupported_numbers"`
-	CheckedFactIDs            []string `json:"checked_fact_ids"`
-	ManualReviewRequired      bool     `json:"manual_review_required"`
-	Limitation                string   `json:"limitation"`
-	StructuralErrors          []string `json:"structural_errors"`
-	SemanticSupportVerified   bool     `json:"semantic_support_verified"`
+	Passed                  bool     `json:"passed"`
+	UnknownFactIDs          []string `json:"unknown_fact_ids"`
+	ForbiddenPhrases        []string `json:"forbidden_phrases"`
+	UnsupportedNumbers      []string `json:"unsupported_numbers"`
+	CheckedFactIDs          []string `json:"checked_fact_ids"`
+	ManualReviewRequired    bool     `json:"manual_review_required"`
+	Limitation              string   `json:"limitation"`
+	StructuralErrors        []string `json:"structural_errors"`
+	SemanticSupportVerified bool     `json:"semantic_support_verified"`
 }
 
 // BundleUsage summarises LLM cost for one run.
@@ -114,19 +114,19 @@ type FileProblem struct {
 
 // ScanReport is the result of scanning an input tree.
 type ScanReport struct {
-	Loaded    []Bundle      `json:"loaded"`
-	Problems  []FileProblem `json:"problems"`
-	WalkedAt  time.Time     `json:"walked_at"`
-	RootPath  string        `json:"root_path"`
+	Loaded   []Bundle      `json:"loaded"`
+	Problems []FileProblem `json:"problems"`
+	WalkedAt time.Time     `json:"walked_at"`
+	RootPath string        `json:"root_path"`
 }
 
 // StatusCounts counts runs by status.
 type StatusCounts struct {
-	PendingReview       int `json:"pending_review"`
+	PendingReview        int `json:"pending_review"`
 	InsufficientEvidence int `json:"insufficient_evidence"`
-	NeedsRevision       int `json:"needs_revision"`
-	ModelError          int `json:"model_error"`
-	Other               int `json:"other"`
+	NeedsRevision        int `json:"needs_revision"`
+	ModelError           int `json:"model_error"`
+	Other                int `json:"other"`
 }
 
 // canonicalStatuses is the set of statuses the upstream pipeline emits.

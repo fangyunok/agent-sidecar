@@ -24,12 +24,12 @@ func TestCanonicalStatuses(t *testing.T) {
 
 func TestValidStatus(t *testing.T) {
 	cases := map[string]bool{
-		"pending_review":       true,
-		"insufficient_evidence": true,
-		"needs_revision":       true,
-		"model_error":          true,
-		"":                     false,
-		"bogus":                false,
+		"pending_review":         true,
+		"insufficient_evidence":  true,
+		"needs_revision":         true,
+		"model_error":            true,
+		"":                       false,
+		"bogus":                  false,
 	}
 	for s, want := range cases {
 		if got := ValidStatus(s); got != want {
@@ -40,11 +40,11 @@ func TestValidStatus(t *testing.T) {
 
 func TestNormaliseStrategy(t *testing.T) {
 	cases := map[string]string{
-		"":        "unspecified",
-		"agent":   "agent",
-		" unknown ": "unspecified",
-		"none":    "unspecified",
-		"agent_loop": "agent_loop",
+		"":            "unspecified",
+		"agent":       "agent",
+		" unknown ":   "unspecified",
+		"none":        "unspecified",
+		"agent_loop":  "agent_loop",
 	}
 	for in, want := range cases {
 		if got := NormaliseStrategy(in); got != want {

@@ -101,12 +101,12 @@ func TestJSONOutputIndentStable(t *testing.T) {
 
 func TestFormatSpan(t *testing.T) {
 	cases := map[int64]string{
-		0:        "0s",
-		500:      "500ms",
-		1500:     "1.5s",
-		90_000:   "1.5min",
-		3_600_000: "1.0h",
-		86_400_000: "1.0d",
+		0:          "0s",
+		500:        "500ms",
+		1500:       "1.5s",
+		90_000:     "1.5min",
+		3_600_000:  "1.0h",
+		86_400_000:  "1.0d",
 	}
 	for in, want := range cases {
 		if got := formatSpan(in); got != want {

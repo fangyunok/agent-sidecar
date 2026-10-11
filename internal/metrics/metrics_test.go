@@ -92,8 +92,6 @@ func TestSummariseBasicFields(t *testing.T) {
 	if got.StatusCounts.Other != 0 {
 		t.Fatalf("Other=%d, want 0", got.StatusCounts.Other)
 	}
-	// Pass-rate: bundle 0 (passed=true), bundle 1 (passed=false),
-	// bundle 2 (no proposal -> not counted as passed).
 	if math.Abs(got.PassRate-1.0/3.0) > 1e-6 {
 		t.Fatalf("PassRate=%v, want ~0.3333", got.PassRate)
 	}
@@ -104,8 +102,7 @@ func TestSummariseBasicFields(t *testing.T) {
 		t.Fatalf("expected at least one trace step with duration_ms")
 	}
 	if got.Tokens.RunCount != 2 {
-		t.Fatalf("Tokens.RunCount=%d, want 2 (bundles 0 and 1 carry usage)",
-			got.Tokens.RunCount)
+		t.Fatalf("Tokens.RunCount=%d, want 2 (bundles 0 and 1 carry usage)", got.Tokens.RunCount)
 	}
 	if got.Tokens.SumInput != 3000 {
 		t.Fatalf("SumInput=%d, want 3000", got.Tokens.SumInput)
@@ -113,9 +110,11 @@ func TestSummariseBasicFields(t *testing.T) {
 	if got.Tokens.SumOutput != 800 {
 		t.Fatalf("SumOutput=%d, want 800", got.Tokens.SumOutput)
 	}
-	if got.IssueKindCounts["unsupported"] != 2 {
-		t.Fatalf("IssueKindCounts[unsupported]=%d, want 2",
-			got.IssueKindCounts["unsupported"])
+	if got.IssueKindCounts["unsupported"] != 1 {
+		t.Fatalf("IssueKindCounts[unsupported]=%d, want 1", got.IssueKindCounts["unsupported"])
+	}
+	if got.IssueKindCounts["overstated"] != 1 {
+		t.Fatalf("IssueKindCounts[overstated]=%d, want 1", got.IssueKindCounts["overstated"])
 	}
 	wantStrats := []string{"agent", "rag"}
 	if !reflect.DeepEqual(got.Strategies, wantStrats) {
@@ -147,8 +146,8 @@ func TestSummariseTokensEmpty(t *testing.T) {
 }
 
 func TestSummariseTokensOneSidedRejected(t *testing.T) {
-	// If only input tokens were observed, we still want the summary
-	// to refuse to lie about the output side, so it stays at zero.
+	// If only input tokens were observed, the summarisation refuses
+	// to lie about the output side and stays at zero.
 	got := summariseTokens([]int{100, 200}, nil)
 	if got.RunCount != 0 {
 		t.Fatalf("RunCount=%d, want 0 (single-sided samples rejected)", got.RunCount)
@@ -157,12 +156,12 @@ func TestSummariseTokensOneSidedRejected(t *testing.T) {
 
 func TestRound2(t *testing.T) {
 	cases := map[float64]float64{
-		0:              0,
-		1.234:          1.23,
-		-1.236:         -1.24,
-		math.NaN():     0,
-		math.Inf(1):    0,
-		math.Inf(-1):   0,
+		0:            0,
+		1.234:        1.23,
+		-1.236:       -1.24,
+		math.NaN():   0,
+		math.Inf(1):  0,
+		math.Inf(-1): 0,
 	}
 	for in, want := range cases {
 		if got := round2(in); got != want {
@@ -189,20 +188,20 @@ func makeBundlesForSummarise() []ingest.Bundle {
 	base := time.Date(2026, 10, 1, 12, 0, 0, 0, time.UTC)
 	b := []ingest.Bundle{
 		{
-			RunID:      "ok-agent",
-			Status:     "pending_review",
-			Strategy:   "agent",
-			Model:      "qwen3:4b-instruct",
-			StartedAt:  base,
-			DurationMS: 5000,
-			Reviewed:   true,
-			Request:    ingest.BundleRequest{ProductID: "demo-product", Feature: "f1"},
-			Proposal: &ingest.BundleProposal{
+			RunID:         "ok-agent",
+			Status:        "pending_review",
+			Strategy:      "agent",
+			Model:         "qwen3:4b-instruct",
+			StartedAt:     base,
+			DurationMS:    5000,
+			Reviewed:      true,
+			Request:       ingest.BundleRequest{ProductID: "demo-product", Feature: "f1"},
+			Proposal:      &ingest.BundleProposal{
 				Citations: []ingest.BundleCitation{{FactID: "f-1"}, {FactID: "f-2"}},
 				Issues:    []ingest.BundleIssue{{Kind: "unsupported"}, {Kind: "overstated"}},
 			},
 			RevisedChecks: ingest.BundleChecks{Passed: true},
-			Usage: &ingest.BundleUsage{
+			Usage:         &ingest.BundleUsage{
 				InputTokens: 1000, OutputTokens: 300,
 			},
 			Trace: []ingest.BundleStep{
@@ -211,14 +210,14 @@ func makeBundlesForSummarise() []ingest.Bundle {
 			},
 		},
 		{
-			RunID:      "insufficient-rag",
-			Status:     "insufficient_evidence",
-			Strategy:   "rag",
-			Model:      "qwen3:14b-instruct",
-			StartedAt:  base.Add(time.Minute),
-			DurationMS: 12000,
-			Reviewed:   false,
-			Request:    ingest.BundleRequest{ProductID: "demo-product", Feature: "f2"},
+			RunID:         "insufficient-rag",
+			Status:        "insufficient_evidence",
+			Strategy:      "rag",
+			Model:         "qwen3:14b-instruct",
+			StartedAt:     base.Add(time.Minute),
+			DurationMS:    12000,
+			Reviewed:      false,
+			Request:       ingest.BundleRequest{ProductID: "demo-product", Feature: "f2"},
 			RevisedChecks: ingest.BundleChecks{Passed: false},
 			Usage: &ingest.BundleUsage{
 				InputTokens: 2000, OutputTokens: 500,
@@ -229,12 +228,12 @@ func makeBundlesForSummarise() []ingest.Bundle {
 			},
 		},
 		{
-			RunID:     "model-error",
-			Status:    "model_error",
-			Strategy:  "agent",
-			StartedAt: base.Add(2 * time.Minute),
+			RunID:      "model-error",
+			Status:     "model_error",
+			Strategy:   "agent",
+			StartedAt:  base.Add(2 * time.Minute),
 			DurationMS: 8000,
-			Request:   ingest.BundleRequest{ProductID: "demo-other", Feature: "f3"},
+			Request:    ingest.BundleRequest{ProductID: "demo-other", Feature: "f3"},
 			// No proposal, no usage, no trace -> exercises the
 			// nil-safe branches.
 		},
