@@ -184,19 +184,28 @@ func TestKeysSorted(t *testing.T) {
 // bundles used by the summarisation tests above. Durations are
 // hand-picked so P50 / P90 line up with predictable integers without
 // pulling in additional float rounding logic.
+//
+// Each struct literal below is a separate gofmt alignment block. A
+// single-line 'field: composite{...}' does not break the block, but
+// a multi-line composite (e.g. Proposal: &BundleProposal{ ... })
+// is closed by a '},' line on its own, which terminates the block.
 func makeBundlesForSummarise() []ingest.Bundle {
 	base := time.Date(2026, 10, 1, 12, 0, 0, 0, time.UTC)
 	b := []ingest.Bundle{
+		// ok-agent: block 1 = RunID..Request (8 fields, longest
+		// DurationMS = 10 chars, value column = 13). Proposal opens
+		// a multi-line composite; Citations/Issues inside form a
+		// nested block (longest Citations = 9, value column 12).
 		{
-			RunID:         "ok-agent",
-			Status:        "pending_review",
-			Strategy:      "agent",
-			Model:         "qwen3:4b-instruct",
-			StartedAt:     base,
-			DurationMS:    5000,
-			Reviewed:      true,
-			Request:       ingest.BundleRequest{ProductID: "demo-product", Feature: "f1"},
-			Proposal:      &ingest.BundleProposal{
+			RunID:      "ok-agent",
+			Status:     "pending_review",
+			Strategy:   "agent",
+			Model:      "qwen3:4b-instruct",
+			StartedAt:  base,
+			DurationMS: 5000,
+			Reviewed:   true,
+			Request:    ingest.BundleRequest{ProductID: "demo-product", Feature: "f1"},
+			Proposal:   &ingest.BundleProposal{
 				Citations: []ingest.BundleCitation{{FactID: "f-1"}, {FactID: "f-2"}},
 				Issues:    []ingest.BundleIssue{{Kind: "unsupported"}, {Kind: "overstated"}},
 			},
@@ -209,6 +218,9 @@ func makeBundlesForSummarise() []ingest.Bundle {
 				{Step: "proposal_checked", DurationMS: intPtr(400)},
 			},
 		},
+		// insufficient-rag: no Proposal field, so the whole RunID..Trace
+		// is a single contiguous block whose longest field is
+		// RevisedChecks (13 chars), value column = 16.
 		{
 			RunID:         "insufficient-rag",
 			Status:        "insufficient_evidence",
@@ -219,7 +231,7 @@ func makeBundlesForSummarise() []ingest.Bundle {
 			Reviewed:      false,
 			Request:       ingest.BundleRequest{ProductID: "demo-product", Feature: "f2"},
 			RevisedChecks: ingest.BundleChecks{Passed: false},
-			Usage: &ingest.BundleUsage{
+			Usage:         &ingest.BundleUsage{
 				InputTokens: 2000, OutputTokens: 500,
 			},
 			Trace: []ingest.BundleStep{
@@ -227,6 +239,10 @@ func makeBundlesForSummarise() []ingest.Bundle {
 				{Step: "model_response", DurationMS: intPtr(6000)},
 			},
 		},
+		// model-error: only RunID..Request (6 fields, longest
+		// DurationMS = 10, value column = 13). No Proposal, no
+		// RevisedChecks, no Usage -> exercises the nil-safe branches
+		// in Summarise().
 		{
 			RunID:      "model-error",
 			Status:     "model_error",

@@ -106,7 +106,7 @@ func TestFormatSpan(t *testing.T) {
 		1500:       "1.5s",
 		90_000:     "1.5min",
 		3_600_000:  "1.0h",
-		86_400_000:  "1.0d",
+		86_400_000: "1.0d",
 	}
 	for in, want := range cases {
 		if got := formatSpan(in); got != want {
